@@ -1,4 +1,4 @@
-import math as math
+import math
 
 class Map:
     def __init__(self, length, height):
