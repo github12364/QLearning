@@ -7,6 +7,10 @@ class Application(tk.Frame):
         self.master = master
         self.pack()
         self.create_widgets()
+        self.mapDims = (1920, 1080)
+
+    def createMap(self):
+        
 
     def create_widgets(self):
         self.hi_there = tk.Button(self)
