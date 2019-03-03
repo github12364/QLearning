@@ -30,18 +30,12 @@ class QLearn:
         
     def observe(self, p_pixelArray, pixelArray, status):
         obs = np.expand_dims(rotateDim(np.array(p_pixelArray)), axis=0)
-        #print (np.array(p_pixelArray).shape)
-        print (obs.shape)
         obs2 = np.expand_dims(rotateDim(np.array(pixelArray)), axis=0)
-        #print (np.array(pixelArray).shape)
-        print (obs2.shape)
         state = np.stack((obs, obs2), axis=1)
-        print (state.shape)
         if np.random.rand() <= self.epsilon:
             return self.chooseRandomAction(pixelArray, status)
         else:
             Q = self.model.predict(state, batch_size=1)
-            print (np.argmax(Q))
             action = np.argmax(Q)
             self.tempD.append(state)
             self.tempD.append(action)
@@ -55,6 +49,7 @@ class QLearn:
     def updateAction(self, reward, done):
         self.tempD.append(reward)
         self.tempD.append(done)
+        self.D.append(self.mb_size)
         
     
 def rotateDim(array):

@@ -13,7 +13,7 @@ class game_loop:
     FPS = 120
     mode= "drawing"
 
-observeTime = 2000
+observeTime = 75
 counter = 0
 ql = qlearn.QLearn()
 while (game_loop.run):
@@ -42,10 +42,11 @@ while (game_loop.run):
         print("DONE")
         counter += 1
         
-        minibatch = random.sample(ql.D, ql.mb_size)                              # Sample some moves
     
-    else:   
-        inputs_shape = (ql.mb_size,) + state.shape[1:]
+    else:  
+        print(ql.D, ql.mb_size)
+        minibatch = random.sample(ql.D, ql.mb_size)    
+        inputs_shape = (ql.mb_size,) + (1,2,36,24)[1:]
         inputs = np.zeros(inputs_shape)
         targets = np.zeros((ql.mb_size, 9))
     
@@ -67,5 +68,5 @@ while (game_loop.run):
                 targets[i, action] = reward + ql.gamma * np.max(Q_sa)
         
         # Train network to output the Q function
-            ql.model.train_on_batch(inputs, targets)
+            model.train_on_batch(inputs, targets)
         print('Learning Finished')

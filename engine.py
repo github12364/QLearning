@@ -59,6 +59,7 @@ def getPixelArray(pixelBackground, car):
 
 
 def render(pygame, screen, background, objects, window):
+    return;
     background.fill(window.color)
     for x in objects:
         addObject(pygame, background, x)
@@ -200,4 +201,3 @@ def run(pygame, screen, background, objectList, game_loop, window, pixelBackgrou
             return
         elif status == "win":
             ql.updateAction(500, True)
-        clock.tick(game_loop.FPS)
