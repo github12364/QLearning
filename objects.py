@@ -8,7 +8,7 @@ class Map:
         self.color = color
         
 class Car:
-    def __init__(self, x, y, a, ra, color, name):
+    def __init__(self, x, y, color, name):
         self.x = x
         self.y = y
         self.angle = 0
@@ -44,7 +44,7 @@ class Obstructions:
         self.name = name
 
 class Cone(Obstructions):
-    def __init__(self, x, y, color, radius):
+    def __init__(self, x, y, radius, color):
         Obstructions.__init__(self, x, y, color, "cone")
         self.radius = radius
 

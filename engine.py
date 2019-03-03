@@ -10,9 +10,9 @@ def addObject(pygame, background, x):
     if x.name == "car":
         return
     if x.name == "cone":
-        pygame.draw.circle(background, (255,0,0),(x.x,x.y,), 10)
+        pygame.draw.circle(background, x.color,(x.x,x.y,), x.radius)
     if x.name == "wall":
-        return
+        pygame.draw.line(background, x.color, (x.x,x.y,),(x.x2,x.y2), x.width)
     return background
 
 def render(pygame, screen, background, objects):
