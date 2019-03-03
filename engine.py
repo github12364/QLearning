@@ -13,6 +13,17 @@ import objects as objs
 
 temp = None
 add_end = False
+move_dict =	{
+  0: [-1,-1],
+  1: [0,0],
+  2: [1,1],
+  3: [0,1],
+  4: [0,0],
+  5: [0,-1],
+  6: [1,-1],
+  7: [1,0],
+  8: [1,1]
+}
 
 def addObject(pygame, background, x):
     if x.name == "car":
@@ -28,64 +39,24 @@ def addObject(pygame, background, x):
         pygame.draw.line(background, x.color, (int(x.x+0.5),int(x.y+0.5)),(int(x.x2+0.5),int(x.y2+0.5)), int(x.width+0.5))
     return True
 
-def getPixelBackground(objects, window):
+def getPixelBackground(objects, background, window):
     pixelArray = [[0 for x in range(window.width)] for x in range(window.height)]
-    for x in objects:
-        if x.name == "car":
-            continue
-        if x.name == "goal":
-            pixels = circlePixelArray(int(x.x+0.5),int(x.y+0.5),x.radius)
-            for p in pixels:
-                pixelArray[p[1]][p[0]] = 250
-                continue
-        if x.name == "cone":
-            pixels = circlePixelArray(int(x.x+0.5),int(x.y+0.5),x.radius)
-        if x.name == "wall":
-            pixels = linePixelArray(int(x.x+0.5),int(x.y+0.5),int(x.x2+0.5),int(x.y2+0.5))
-        for x in pixels:
-            pixelArray[x[1]][x[0]] = 150
+    for x in range(window.width):
+        for y in range(window.height):
+            pixelArray[y][x] = int(sum(background.get_at((x, y))[:3])/3)
     return pixelArray
         
-def circlePixelArray(x,y,r):
-    radiusSquared = r*r
-    pixels = []
-    for xc in range(x-r, x+r+1):
-        for yc in range(y-r, y+r+1):
-            if (x-xc)*(x-xc)+(y-yc)*(y-yc) <= radiusSquared:
-                pixels.append((int(x),int(y),))
-    return pixels
-
 def getPixelArray(pixelBackground, car):
-    for x in range(int(car.x-car.length), int(car.x+car.length)):
-        for y in range(int(car.y - car.length), int(car.y+car.length)):
-            if pixelBackground[y][x] == 200:
-                pixelBackground[y][x] == 0
-    verticies = car.getVerticies()
-    pixels = []
-    pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[0]+verticies[1]))))
-    pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[1]+verticies[2]))))
-    pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[2]+verticies[3]))))
-    pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[3]+verticies[0]))))
-    for x in pixels:
-        pixelBackground[x[1]][x[0]] = 200
-    return pixelBackground
+    pixelArray = copy.deepcopy(pixelBackground)
+    carx = int(car.x/30+0.5)
+    cary = int(car.y/30+0.5)
+    for i in range(carx-1, carx+2):
+        for j in range(cary -1, cary + 2):
+            pixelArray[j][i] -= 50
+    pixelArray[cary][carx] = 0
+    return pixelArray
 
-def linePixelArray(x0, y0, x1, y1):
-    pixels = []
-    deltax = x1 - x0
-    deltay = y1 - y0
-    if deltax == 0:
-        return [(x0, y) for y in range(y0,y1+1)]
-    deltaerr = abs(deltay / deltax)
-    error = 0.0 
-    y = y0
-    for x in range(x0, x1):
-        pixels.append((int(x),int(y),))
-        error = error + deltaerr
-        if error >= 0.5:
-            y = y + deltay / abs(deltay) * 1
-            error = error - 1.0
-    return pixels
+
 
 def render(pygame, screen, background, objects, window):
     background.fill(window.color)
@@ -95,10 +66,19 @@ def render(pygame, screen, background, objects, window):
     pygame.display.update()
             
     
+def renderfirst(pygame, screen, background, objects, window):
+    background.fill(window.color)
+    for x in objects:
+        if x.name == 'car':
+            continue
+        addObject(pygame, background, x)
+    screen.blit(background, (0, 0))
+    pygame.display.update()
+    
 def update(objects, FPS, choices, window):
     car = objects[0]
-    if car.x < car.length*2 or car.y < car.length*2 or car.x > window.width - car.length*2 or car.y > window.height - car.length*2:
-        return False
+    if car.x < car.length/2 or car.y < car.length/2 or car.x > window.width - car.length/2 or car.y > window.height - car.length/2:
+        return "punish"
     for x in objects:
         if x.name == "car":
             car.update(choices, FPS)
@@ -106,7 +86,7 @@ def update(objects, FPS, choices, window):
         if x.name == "goal":
             collision = physics.carCircle(car, x)
             if collision: 
-                x.color = (255,255,255)
+                x.color = (0,255,0)
                 return "win"
             continue
             
@@ -116,19 +96,19 @@ def update(objects, FPS, choices, window):
             collision = physics.carLine(car, (x.x,x.y,x.x2,x.y2))
         if collision:
             x.color = (0,0,0)
-            return False
+            return "punish"
         else:
             x.color = (255, 0, 0)
     return True
         
 def addCone(objects, x, y):
-    objects.append(objs.Cone(x, y, 20, (255,0,0)),)
+    objects.append(objs.Cone(x, y, 50, (255,0,0)),)
 
 def addWall(objects, x, y, x2, y2):
-    objects.append(objs.Wall(x, y, x2, y2, 5, (255,0,0)),)
+    objects.append(objs.Wall(x, y, x2, y2, 50, (255,0,0)),)
 
 def addGoal(objects, x, y):
-    objects.append(objs.Goal(x, y, 20, (0,255,0)),)
+    objects.append(objs.Goal(x, y, 25, (0,255,0)),)
 
 def checkEvents(pygame, objects, choices):
     global temp
@@ -173,7 +153,19 @@ def checkEvents(pygame, objects, choices):
             if event.key == pygame.K_e:
                 add_end = False
 
-            
+def compressPixelArray(pixelArray, step):
+    output = []
+    for y in range(0, len(pixelArray), step):
+        tempArray = []
+        for x in range(0, len(pixelArray[y]), step):
+            val = 0
+            for i in range(step):
+                for j in range(step):
+                    val += pixelArray[y+i][x+j]
+            val = int(val / (step*step))
+            tempArray.append(val)
+        output.append(tempArray)
+    return output
 
 def init(pygame, window):
     pygame.init()
@@ -186,20 +178,26 @@ def init(pygame, window):
     return screen, background
 
 
-
-def run(pygame, screen, background, objectList, game_loop, window, pixelBackground):
+def run(pygame, screen, background, objectList, game_loop, window, pixelBackground, ql):
     clock = pygame.time.Clock()
     choices = [0,0]
-    ql = qlearn.QLearn()
+    p_pixelArray = None
     while game_loop.run == True:
         render(pygame, screen, background, objectList, window)
         status = update(objectList, game_loop.FPS, choices, window)
         action = checkEvents(pygame, objectList, choices)
         pixelArray = getPixelArray(pixelBackground, objectList[0])
-        choices = ql.chooseAction(pixelArray)
+        if p_pixelArray != None:
+            choices = move_dict[ql.observe(p_pixelArray, pixelArray, status)]
+        else:
+            choices = [0, 0]
+        p_pixelArray = pixelArray
         if action == "quit":
             game_loop.run = False
             return 1
-        if status == False: 
-            return 0
+        if status == "punish":
+            ql.updateAction(-500, True)
+            return
+        elif status == "win":
+            ql.updateAction(500, True)
         clock.tick(game_loop.FPS)

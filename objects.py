@@ -18,8 +18,8 @@ class Car:
         self.max_v = 300
         self.dv = 400
         self.d_angle = math.pi/4
-        self.length = 30
-        self.width = 15
+        self.length = 100
+        self.width = 50
         self.color = color
         self.name = "car"
         self.updated = True
