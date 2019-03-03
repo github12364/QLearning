@@ -13,6 +13,8 @@ class Car:
         self.v = 0
         self.a = 1
         self.rv = math.pi / 180
+        self.length = 20
+        self.width = 10
 
     def turn(self, direction):
         if direction == "right":
