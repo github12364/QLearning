@@ -4,4 +4,5 @@ class QLearner:
         self.discount_factor = 0.1
 
     def qlearn(self, currentQ, r, sprime, aprime,  ):
+        Qsa = model.predict()
         Q(s, a) = currentQ + self.learning_rate * (r + self.discount_factor * maxaQ(sprime, aprime) - currentQ)
