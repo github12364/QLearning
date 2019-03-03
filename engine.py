@@ -6,14 +6,18 @@ Created on Sat Mar  2 15:13:25 2019
 """
 
 
-def addObject(background, x):
-    if type(x) == 'Car':
+def addObject(pygame, background, x):
+    if x.name == "car":
+        return
+    if x.name == "cone":
+        pygame.draw.circle(background, (255,0,0),(x.x,x.y,), 10)
+    if x.name == "wall":
         return
     return background
 
 def render(pygame, screen, background, objects):
     for x in objects:
-        addObject(background, x)
+        addObject(pygame, background, x)
     screen.blit(background, (0, 0))
     pygame.display.flip()
     
@@ -32,7 +36,7 @@ def init(pygame, window):
     pygame.mouse.set_visible(1)
     background = pygame.Surface(screen.get_size())
     background = background.convert()
-    background.fill((255, 255, 255))
+    background.fill(window.color)
     return screen, background
 
 def run(pygame, screen, background, objects, game_loop):
