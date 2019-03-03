@@ -14,9 +14,9 @@ class Car:
         self.angle = 0
         self.wheel_angle = 0
         self.v = 0
-        self.min_v = -40
-        self.max_v = 100
-        self.dv = 40
+        self.min_v = -100
+        self.max_v = 300
+        self.dv = 400
         self.d_angle = math.pi/4
         self.length = 30
         self.width = 15
@@ -31,7 +31,7 @@ class Car:
         self.v = min(self.v, self.max_v)
         self.v = max(self.v, self.min_v)
         self.wheel_angle = self.d_angle*choices[1]/FPS
-        self.angle += self.wheel_angle * self.v /FPS 
+        self.angle += self.wheel_angle * self.v /FPS *2
         
     def getVerticies(self):
         frontright = (self.x+math.cos(self.angle)*self.length/2-math.sin(self.angle)*self.width/2, 
@@ -47,6 +47,8 @@ class Car:
                       self.y - math.sin(self.angle)*self.length/2-math.cos(self.angle)*self.width/2,)
         return (frontright, frontleft, backleft, backright)
 
+
+
 class Obstructions:
     def __init__(self, x, y, color, name):
         self.x = x
@@ -58,6 +60,11 @@ class Obstructions:
 class Cone(Obstructions):
     def __init__(self, x, y, radius, color):
         Obstructions.__init__(self, x, y, color, "cone")
+        self.radius = radius
+        
+class Goal(Obstructions):
+    def __init__(self, x, y, radius, color):
+        Obstructions.__init__(self, x, y, color, "goal")
         self.radius = radius
 
 class Wall(Obstructions):

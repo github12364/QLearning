@@ -6,7 +6,7 @@ Created on Sat Mar  2 15:13:25 2019
 """
 import math
 import physics
-
+import copy
 def addObject(pygame, background, x):
     if x.name == "car":
         verticies = x.getVerticies()
@@ -15,7 +15,7 @@ def addObject(pygame, background, x):
         pygame.draw.circle(background, (0,0,255), tuple(map(lambda x: int(x+0.5), verticies[2])), 3)
         pygame.draw.circle(background, (0,0,0), tuple(map(lambda x: int(x+0.5), verticies[3])), 3)
         pygame.draw.polygon(background, (255,0,255), tuple(map(lambda x: tuple(map(lambda y: int(y+0.5), x)), verticies)))
-    if x.name == "cone":
+    if x.name == "cone" or x.name == "goal":
         pygame.draw.circle(background, x.color,(int(x.x+0.5),int(x.y+0.5)), int(x.radius+0.5))
     if x.name == "wall":
         pygame.draw.line(background, x.color, (int(x.x+0.5),int(x.y+0.5)),(int(x.x2+0.5),int(x.y2+0.5)), int(x.width+0.5))
@@ -26,12 +26,15 @@ def getPixelBackground(objects, window):
     for x in objects:
         if x.name == "car":
             continue
+        if x.name == "goal":
+            pixels = circlePixelArray(int(x.x+0.5),int(x.y+0.5),x.radius)
         if x.name == "cone":
             pixels = circlePixelArray(int(x.x+0.5),int(x.y+0.5),x.radius)
         if x.name == "wall":
             pixels = linePixelArray(int(x.x+0.5),int(x.y+0.5),int(x.x2+0.5),int(x.y2+0.5))
         for x in pixels:
-            pixelArray[x[1]][x[0]] = 200
+            pixelArray[x[1]][x[0]] = 150
+    return pixelArray
         
 def circlePixelArray(x,y,r):
     radiusSquared = r*r
@@ -39,9 +42,19 @@ def circlePixelArray(x,y,r):
     for xc in range(x-r, x+r+1):
         for yc in range(y-r, y+r+1):
             if (x-xc)*(x-xc)+(y-yc)*(y-yc) <= radiusSquared:
-                pixels.append((x,y,))
+                pixels.append((int(x),int(y),))
     return pixels
-                
+
+def getPixelArray(pixelBackground, car):   
+    verticies = car.getVerticies()
+    pixels = []
+    pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[0]+verticies[1]))))
+    pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[1]+verticies[2]))))
+    pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[2]+verticies[3]))))
+    pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[3]+verticies[0]))))
+    for x in pixels:
+        pixelBackground[x[1]][x[0]] = 200
+    return pixelBackground
 
 def linePixelArray(x0, y0, x1, y1):
     pixels = []
@@ -53,7 +66,7 @@ def linePixelArray(x0, y0, x1, y1):
     error = 0.0 
     y = y0
     for x in range(x0, x1):
-        pixels.append((x,y,))
+        pixels.append((int(x),int(y),))
         error = error + deltaerr
         if error >= 0.5:
             y = y + deltay / abs(deltay) * 1
@@ -68,19 +81,31 @@ def render(pygame, screen, background, objects, window):
     pygame.display.update()
             
     
-def update(objects, FPS, choices):
+def update(objects, FPS, choices, window):
     car = objects[0]
+    if car.x < car.length*2 or car.y < car.length*2 or car.x > window.width - car.length*2 or car.y > window.height - car.length*2:
+        return False
+    
     for x in objects:
         if x.name == "car":
             car.update(choices, FPS)
             continue
+        if x.name == "goal":
+            collision = physics.carCircle(car, x)
+            if collision: 
+                x.color = (255,255,255)
+                return "win"
+            continue
+            
         if x.name == "cone":
             collision = physics.carCircle(car, x)
         if x.name == "wall":
             collision = physics.carLine(car, (x.x,x.y,x.x2,x.y2))
         if collision:
             x.color = (0,0,0)
+            return False
         else:
+            return True
             x.color = (255, 0, 0)
         
 
@@ -127,8 +152,12 @@ def run(pygame, screen, background, objects, game_loop, window, pixelBackground)
     choices = [0,0]
     while game_loop.run == True:
         render(pygame, screen, background, objects, window)
-        update(objects, game_loop.FPS, choices)
+        status = update(objects, game_loop.FPS, choices, window)
         action = checkEvents(pygame, objects, choices)
+        pixelArray = getPixelArray(pixelBackground, objects[0])
         if action == "quit":
+            game_loop.run = False
             return 1
+        if status == False: 
+            return 0
         clock.tick(game_loop.FPS)
