@@ -7,6 +7,8 @@ Created on Sat Mar  2 15:13:25 2019
 import math
 import physics
 import copy
+import qlearn
+
 import objects as objs
 
 temp = None
@@ -188,14 +190,17 @@ def init(pygame, window):
 def run(pygame, screen, background, objectList, game_loop, window, pixelBackground):
     clock = pygame.time.Clock()
     choices = [0,0]
+    ql = qlearn.QLearn()
     while game_loop.run == True:
         render(pygame, screen, background, objectList, window)
         status = update(objectList, game_loop.FPS, choices, window)
         action = checkEvents(pygame, objectList, choices)
         pixelArray = getPixelArray(pixelBackground, objectList[0])
+        action = ql.chooseAction(pixelArray)
         if action == "quit":
             game_loop.run = False
             return 1
         if status == False: 
             return 0
         clock.tick(game_loop.FPS)
+        return action
