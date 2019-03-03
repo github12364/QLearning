@@ -7,6 +7,8 @@ Created on Sat Mar  2 15:13:25 2019
 import math
 import physics
 import copy
+import qlearn
+
 def addObject(pygame, background, x):
     if x.name == "car":
         verticies = x.getVerticies()
@@ -156,11 +158,13 @@ def init(pygame, window):
 def run(pygame, screen, background, objectList, game_loop, window, pixelBackground):
     clock = pygame.time.Clock()
     choices = [0,0]
+    qlearn = qlearn.QLearn()
     while game_loop.run == True:
         render(pygame, screen, background, objectList, window)
         status = update(objectList, game_loop.FPS, choices, window)
         action = checkEvents(pygame, objectList, choices)
         pixelArray = getPixelArray(pixelBackground, objectList[0])
+        action = qlearn.chooseAction(pixelArray)
         if action == "quit":
             game_loop.run = False
             return 1
