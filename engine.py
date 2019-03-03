@@ -92,7 +92,6 @@ def update(objects, FPS, choices, window):
     car = objects[0]
     if car.x < car.length*2 or car.y < car.length*2 or car.x > window.width - car.length*2 or car.y > window.height - car.length*2:
         return False
-    
     for x in objects:
         if x.name == "car":
             car.update(choices, FPS)
@@ -112,8 +111,8 @@ def update(objects, FPS, choices, window):
             x.color = (0,0,0)
             return False
         else:
-            return True
             x.color = (255, 0, 0)
+    return True
         
 
 def checkEvents(pygame, objects, choices):
@@ -154,14 +153,14 @@ def init(pygame, window):
 
 
 
-def run(pygame, screen, background, objects, game_loop, window, pixelBackground):
+def run(pygame, screen, background, objectList, game_loop, window, pixelBackground):
     clock = pygame.time.Clock()
     choices = [0,0]
     while game_loop.run == True:
-        render(pygame, screen, background, objects, window)
-        status = update(objects, game_loop.FPS, choices, window)
-        action = checkEvents(pygame, objects, choices)
-        pixelArray = getPixelArray(pixelBackground, objects[0])
+        render(pygame, screen, background, objectList, window)
+        status = update(objectList, game_loop.FPS, choices, window)
+        action = checkEvents(pygame, objectList, choices)
+        pixelArray = getPixelArray(pixelBackground, objectList[0])
         if action == "quit":
             game_loop.run = False
             return 1
