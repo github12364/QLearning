@@ -12,10 +12,12 @@ objectList = [
         objects.Wall(700, 500, 400, 800, 5, (255,0,0)),
         ]
 window = objects.Map(1080,720, "test", (255,255,0))
+pixelArray = []
 
 class game_loop:
     run = True
     FPS = 60
+    mode= "drawing"
 
 screen, background = engine.init(pygame, window)
-engine.run(pygame, screen, background, objectList, game_loop, window)
+engine.run(pygame, screen, background, objectList, game_loop, window, pixelArray)

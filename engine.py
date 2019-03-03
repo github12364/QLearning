@@ -19,29 +19,34 @@ def addObject(pygame, background, x):
         pygame.draw.circle(background, x.color,(int(x.x+0.5),int(x.y+0.5)), int(x.radius+0.5))
     if x.name == "wall":
         pygame.draw.line(background, x.color, (int(x.x+0.5),int(x.y+0.5)),(int(x.x2+0.5),int(x.y2+0.5)), int(x.width+0.5))
-    return background
+    return True
+
+def getPixelArray(objects):
+    return []
+    
 
 def render(pygame, screen, background, objects, window):
     background.fill(window.color)
     for x in objects:
         addObject(pygame, background, x)
     screen.blit(background, (0, 0))
-    pygame.display.flip()
+    pygame.display.update()
+            
     
 def update(objects, FPS, choices):
     car = objects[0]
     for x in objects:
         if x.name == "car":
             car.update(choices, FPS)
-        if x.name == "cone":
             continue
+        if x.name == "cone":
+            collision = physics.carCircle(car, x)
         if x.name == "wall":
             collision = physics.carLine(car, (x.x,x.y,x.x2,x.y2))
-            if collision:
-                x.color = (0,0,0)
-            else:
-                x.color = (255, 0, 0)
-            
+        if collision:
+            x.color = (0,0,0)
+        else:
+            x.color = (255, 0, 0)
         
 
 def checkEvents(pygame, objects, choices):
@@ -80,12 +85,14 @@ def init(pygame, window):
     background.fill(window.color)
     return screen, background
 
-def run(pygame, screen, background, objects, game_loop, window):
+
+
+def run(pygame, screen, background, objects, game_loop, window, pixelArray):
     clock = pygame.time.Clock()
     choices = [0,0]
     while game_loop.run == True:
-        update(objects, game_loop.FPS, choices)
         render(pygame, screen, background, objects, window)
+        update(objects, game_loop.FPS, choices)
         action = checkEvents(pygame, objects, choices)
         if action == "quit":
             return 1

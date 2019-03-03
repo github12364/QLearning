@@ -4,6 +4,7 @@ Created on Sat Mar  2 17:49:20 2019
 
 @author: Henry
 """
+import math
 
 def lineLine(line1, line2):
     x1 = float(line1[0])
@@ -29,3 +30,9 @@ def carLine(car, line):
     line3 = verticies[2]+verticies[3]
     line4 = verticies[3]+verticies[0]
     return (lineLine(line1, line) or lineLine(line2, line) or lineLine(line3, line) or lineLine(line4, line))
+
+def carCircle(car, circle):
+    verticies = car.getVerticies()
+    for x in verticies:
+        if math.sqrt(math.pow((x[0] - circle.x), 2) + math.pow(x[1] - circle.y, 2)) <= circle.radius:
+            return True
