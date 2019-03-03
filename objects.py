@@ -28,13 +28,11 @@ class Car:
 
     def accelerate(self):
         self.v += 1
-        self.x += self.v * math.sin(self.angle)
-        self.y += self.v * math.cos(self.angle)
             
     def decelerate(self):
         self.v -= 1
-        self.x -= self.v * math.sin(self.angle)
-        self.y -= self.v * math.cos(self.angle)
+        
+    
         
     def getVerticies(self):
         frontright = (self.x+math.cos(self.angle)*self.length/2-math.sin(self.angle)*self.width/2, 

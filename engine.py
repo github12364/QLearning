@@ -5,6 +5,7 @@ Created on Sat Mar  2 15:13:25 2019
 @author: Henry
 """
 import math
+import physics
 
 def addObject(pygame, background, x):
     if x.name == "car":
@@ -28,13 +29,37 @@ def render(pygame, screen, background, objects, window):
     pygame.display.flip()
     
 def update(objects, FPS):
-    #objects[0].angle+=2/FPS
-    pass
+    car = objects[0]
+    for x in objects:
+        if x.name == "car":
+            continue
+        if x.name == "cone":
+            continue
+        if x.name == "wall":
+            collision = physics.carLine(car, (x.x,x.y,x.x2,x.y2))
+            if collision:
+                x.color = (0,0,0)
+            else:
+                x.color = (255, 0, 0)
+            
+        
 
-def checkEvents(pygame):
+def checkEvents(pygame, objects):
     for event in pygame.event.get():
         if event.type == pygame.locals.QUIT:
             return "quit"
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return "quit"
+            if event.key == pygame.K_LEFT:
+                objects[0].turn("left")
+            if event.key == pygame.K_RIGHT:
+                objects[0].turn("right")
+            if event.key == pygame.K_UP:
+                objects[0].accelerate()
+            if event.key == pygame.K_DOWN:
+                objects[0].decelerate()
+            
 
 def init(pygame, window):
     pygame.init()
@@ -51,7 +76,7 @@ def run(pygame, screen, background, objects, game_loop, window):
     while game_loop.run == True:
         update(objects, game_loop.FPS)
         render(pygame, screen, background, objects, window)
-        action = checkEvents(pygame)
+        action = checkEvents(pygame, objects)
         if action == "quit":
             return 1
-        clock.tick(game_loop.FPS)
+        
