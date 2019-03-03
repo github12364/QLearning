@@ -10,12 +10,13 @@ def addObject(pygame, background, x):
     if x.name == "car":
         return
     if x.name == "cone":
-        pygame.draw.circle(background, x.color,(x.x,x.y,), x.radius)
+        pygame.draw.circle(background, x.color,(int(x.x+0.5),int(x.y+0.5)), int(x.radius+0.5))
     if x.name == "wall":
-        pygame.draw.line(background, x.color, (x.x,x.y,),(x.x2,x.y2), x.width)
+        pygame.draw.line(background, x.color, (int(x.x+0.5),int(x.y+0.5)),(int(x.x2+0.5),int(x.y2+0.5)), int(x.width+0.5))
     return background
 
-def render(pygame, screen, background, objects):
+def render(pygame, screen, background, objects, window):
+    background.fill(window.color)
     for x in objects:
         addObject(pygame, background, x)
     screen.blit(background, (0, 0))
@@ -39,11 +40,11 @@ def init(pygame, window):
     background.fill(window.color)
     return screen, background
 
-def run(pygame, screen, background, objects, game_loop):
+def run(pygame, screen, background, objects, game_loop, window):
     clock = pygame.time.Clock()
     while game_loop.run == True:
         update(objects, game_loop.FPS)
-        render(pygame, screen, background, objects)
+        render(pygame, screen, background, objects, window)
         action = checkEvents(pygame)
         if action == "quit":
             return 1

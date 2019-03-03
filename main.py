@@ -18,4 +18,4 @@ class game_loop:
     FPS = 60
 
 screen, background = engine.init(pygame, window)
-engine.run(pygame, screen, background, objectList, game_loop)
+engine.run(pygame, screen, background, objectList, game_loop, window)
