@@ -7,6 +7,11 @@ Created on Sat Mar  2 15:13:25 2019
 import math
 import physics
 import copy
+import objects as objs
+
+temp = None
+add_end = False
+
 def addObject(pygame, background, x):
     if x.name == "car":
         verticies = x.getVerticies()
@@ -114,12 +119,33 @@ def update(objects, FPS, choices, window):
             x.color = (255, 0, 0)
     return True
         
+def addCone(objects, x, y):
+    objects.append(objs.Cone(x, y, 20, (255,0,0)),)
+
+def addWall(objects, x, y, x2, y2):
+    objects.append(objs.Wall(x, y, x2, y2, 5, (255,0,0)),)
+
+def addGoal(objects, x, y):
+    objects.append(objs.Goal(x, y, 20, (0,255,0)),)
 
 def checkEvents(pygame, objects, choices):
+    global temp
+    global add_end
     for event in pygame.event.get():
         if event.type == pygame.locals.QUIT:
             return "quit"
-        if event.type == pygame.KEYDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if add_end:
+                addGoal(*((objects,) + pygame.mouse.get_pos()))
+            elif event.button == 3:
+                addCone(*((objects,) + pygame.mouse.get_pos()))
+            else:
+                temp = pygame.mouse.get_pos()
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if temp:
+                addWall(*((objects,) + temp + pygame.mouse.get_pos()) )
+                temp = None
+        elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 return "quit"
             if event.key == pygame.K_LEFT:
@@ -130,6 +156,9 @@ def checkEvents(pygame, objects, choices):
                 choices[0]=1
             if event.key == pygame.K_DOWN:
                 choices[0]=-1
+            if event.key == pygame.K_e:
+                add_end = True
+                
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 choices[1]=0
@@ -139,6 +168,9 @@ def checkEvents(pygame, objects, choices):
                 choices[0]=0
             if event.key == pygame.K_DOWN:
                 choices[0]=0
+            if event.key == pygame.K_e:
+                add_end = False
+
             
 
 def init(pygame, window):
