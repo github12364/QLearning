@@ -1,35 +1,21 @@
-import tkinter as tk
-from PIL import Image
+import pygame
+import objects
+import engine
+import os, sys
+from pygame.locals import *
 
-class Application(tk.Frame):
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.master = master
-        self.pack()
-        self.create_widgets()
-        self.mapDims = (1920, 1080)
+objectList = [
+        objects.Car(500, 300, (0,255,0), "car"), 
+        objects.Cone(100, 100, 20, (255,0,0)), 
+        objects.Cone(100, 200, 20, (255,0,0),),
+        objects.Wall(300, 300, 300, 200, 5, (255,0,0)), 
+        objects.Wall(700, 500, 400, 800, 5, (255,0,0)),
+        ]
+window = objects.Map(1080,720, "test", (255,255,0))
 
-    def createMap(self):
-        
+class game_loop:
+    run = True
+    FPS = 60
 
-    def create_widgets(self):
-        self.hi_there = tk.Button(self)
-        self.hi_there["text"] = "Hello World\n(click me)"
-        self.hi_there["command"] = self.say_hi
-        self.hi_there.pack(side="top")
-
-        self.quit = tk.Button(self, text="QUIT", fg="red",
-                              command=self.master.destroy)
-        self.quit.pack(side="bottom")
-
-    def say_hi(self):
-        print("hi there, everyone!")
-        self.canvas = tk.Canvas(root)
-        self.canvas.pack
-        self.img = tk.PhotoImage(Image.open("intersectionImage.png"))
-        self.canvas.create_image(0,0, self.img)
-
-root = tk.Tk()
-
-app = Application(master=root)
-app.mainloop()
+screen, background = engine.init(pygame, window)
+engine.run(pygame, screen, background, objectList, game_loop, window)
