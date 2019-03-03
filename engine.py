@@ -4,11 +4,16 @@ Created on Sat Mar  2 15:13:25 2019
 
 @author: Henry
 """
-
+import math
 
 def addObject(pygame, background, x):
     if x.name == "car":
-        return
+        verticies = x.getVerticies()
+        pygame.draw.circle(background, (255,0,0), tuple(map(lambda x: int(x+0.5), verticies[0])), 3)
+        pygame.draw.circle(background, (0,255,0),tuple(map(lambda x: int(x+0.5), verticies[1])), 3)
+        pygame.draw.circle(background, (0,0,255), tuple(map(lambda x: int(x+0.5), verticies[2])), 3)
+        pygame.draw.circle(background, (0,0,0), tuple(map(lambda x: int(x+0.5), verticies[3])), 3)
+        pygame.draw.polygon(background, (255,0,255), tuple(map(lambda x: tuple(map(lambda y: int(y+0.5), x)), verticies)))
     if x.name == "cone":
         pygame.draw.circle(background, x.color,(int(x.x+0.5),int(x.y+0.5)), int(x.radius+0.5))
     if x.name == "wall":
@@ -23,6 +28,7 @@ def render(pygame, screen, background, objects, window):
     pygame.display.flip()
     
 def update(objects, FPS):
+    #objects[0].angle+=2/FPS
     pass
 
 def checkEvents(pygame):

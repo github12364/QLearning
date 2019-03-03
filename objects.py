@@ -15,8 +15,8 @@ class Car:
         self.v = 0
         self.a = 1
         self.rv = math.pi / 180
-        self.length = 20
-        self.width = 10
+        self.length = 100
+        self.width = 50
         self.color = color
         self.name = "car"
 
@@ -35,6 +35,20 @@ class Car:
         self.v -= 1
         self.x -= self.v * math.sin(self.angle)
         self.y -= self.v * math.cos(self.angle)
+        
+    def getVerticies(self):
+        frontright = (self.x+math.cos(self.angle)*self.length/2-math.sin(self.angle)*self.width/2, 
+                     self.y + math.sin(self.angle)*self.length/2+math.cos(self.angle)*self.width/2,)
+        
+        frontleft = (self.x+math.cos(self.angle)*self.length/2+math.sin(self.angle)*self.width/2, 
+                      self.y + math.sin(self.angle)*self.length/2-math.cos(self.angle)*self.width/2,)
+        
+        backright = (self.x-math.cos(self.angle)*self.length/2-math.sin(self.angle)*self.width/2, 
+                     self.y - math.sin(self.angle)*self.length/2+math.cos(self.angle)*self.width/2,)
+        
+        backleft = (self.x - math.cos(self.angle)*self.length/2+math.sin(self.angle)*self.width/2, 
+                      self.y - math.sin(self.angle)*self.length/2-math.cos(self.angle)*self.width/2,)
+        return (frontright, frontleft, backleft, backright)
 
 class Obstructions:
     def __init__(self, x, y, color, name):

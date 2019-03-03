@@ -5,7 +5,7 @@ import os, sys
 from pygame.locals import *
 
 objectList = [
-        objects.Car(0,0, (0,255,0), "car"), 
+        objects.Car(500, 300, (0,255,0), "car"), 
         objects.Cone(100, 100, 20, (255,0,0)), 
         objects.Cone(100, 200, 20, (255,0,0),),
         objects.Wall(300, 300, 300, 200, 5, (255,0,0)), 
