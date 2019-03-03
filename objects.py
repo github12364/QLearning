@@ -14,15 +14,15 @@ class Car:
         self.angle = 0
         self.wheel_angle = 0
         self.v = 0
-        self.min_v = -20
-        self.max_v = 50
-        self.dv = 20
+        self.min_v = -40
+        self.max_v = 100
+        self.dv = 40
         self.d_angle = math.pi/4
         self.length = 30
         self.width = 15
         self.color = color
         self.name = "car"
-
+        self.updated = True
     
     def update(self, choices, FPS):
         self.x += self.v*math.cos(self.angle)/FPS
@@ -53,6 +53,7 @@ class Obstructions:
         self.y = y
         self.color = color
         self.name = name
+        self.updated = True
 
 class Cone(Obstructions):
     def __init__(self, x, y, radius, color):

@@ -21,9 +21,44 @@ def addObject(pygame, background, x):
         pygame.draw.line(background, x.color, (int(x.x+0.5),int(x.y+0.5)),(int(x.x2+0.5),int(x.y2+0.5)), int(x.width+0.5))
     return True
 
-def getPixelArray(objects):
-    return []
-    
+def getPixelBackground(objects, window):
+    pixelArray = [[0 for x in range(window.width)] for x in range(window.height)]
+    for x in objects:
+        if x.name == "car":
+            continue
+        if x.name == "cone":
+            pixels = circlePixelArray(int(x.x+0.5),int(x.y+0.5),x.radius)
+        if x.name == "wall":
+            pixels = linePixelArray(int(x.x+0.5),int(x.y+0.5),int(x.x2+0.5),int(x.y2+0.5))
+        for x in pixels:
+            pixelArray[x[1]][x[0]] = 200
+        
+def circlePixelArray(x,y,r):
+    radiusSquared = r*r
+    pixels = []
+    for xc in range(x-r, x+r+1):
+        for yc in range(y-r, y+r+1):
+            if (x-xc)*(x-xc)+(y-yc)*(y-yc) <= radiusSquared:
+                pixels.append((x,y,))
+    return pixels
+                
+
+def linePixelArray(x0, y0, x1, y1):
+    pixels = []
+    deltax = x1 - x0
+    deltay = y1 - y0
+    if deltax == 0:
+        return [(x0, y) for y in range(y0,y1+1)]
+    deltaerr = abs(deltay / deltax)
+    error = 0.0 
+    y = y0
+    for x in range(x0, x1):
+        pixels.append((x,y,))
+        error = error + deltaerr
+        if error >= 0.5:
+            y = y + deltay / abs(deltay) * 1
+            error = error - 1.0
+    return pixels
 
 def render(pygame, screen, background, objects, window):
     background.fill(window.color)
@@ -87,7 +122,7 @@ def init(pygame, window):
 
 
 
-def run(pygame, screen, background, objects, game_loop, window, pixelArray):
+def run(pygame, screen, background, objects, game_loop, window, pixelBackground):
     clock = pygame.time.Clock()
     choices = [0,0]
     while game_loop.run == True:
@@ -96,4 +131,4 @@ def run(pygame, screen, background, objects, game_loop, window, pixelArray):
         action = checkEvents(pygame, objects, choices)
         if action == "quit":
             return 1
-        
+        clock.tick(game_loop.FPS)
