@@ -28,6 +28,9 @@ def getPixelBackground(objects, window):
             continue
         if x.name == "goal":
             pixels = circlePixelArray(int(x.x+0.5),int(x.y+0.5),x.radius)
+            for p in pixels:
+                pixelArray[p[1]][p[0]] = 250
+                continue
         if x.name == "cone":
             pixels = circlePixelArray(int(x.x+0.5),int(x.y+0.5),x.radius)
         if x.name == "wall":
@@ -45,7 +48,11 @@ def circlePixelArray(x,y,r):
                 pixels.append((int(x),int(y),))
     return pixels
 
-def getPixelArray(pixelBackground, car):   
+def getPixelArray(pixelBackground, car):
+    for x in range(int(car.x-car.length), int(car.x+car.length)):
+        for y in range(int(car.y - car.length), int(car.y+car.length)):
+            if pixelBackground[y][x] == 200:
+                pixelBackground[y][x] == 0
     verticies = car.getVerticies()
     pixels = []
     pixels += linePixelArray(*list(map(lambda x: int(x+0.5),(verticies[0]+verticies[1]))))
