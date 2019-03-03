@@ -28,11 +28,11 @@ def render(pygame, screen, background, objects, window):
     screen.blit(background, (0, 0))
     pygame.display.flip()
     
-def update(objects, FPS):
+def update(objects, FPS, choices):
     car = objects[0]
     for x in objects:
         if x.name == "car":
-            continue
+            car.update(choices, FPS)
         if x.name == "cone":
             continue
         if x.name == "wall":
@@ -44,7 +44,7 @@ def update(objects, FPS):
             
         
 
-def checkEvents(pygame, objects):
+def checkEvents(pygame, objects, choices):
     for event in pygame.event.get():
         if event.type == pygame.locals.QUIT:
             return "quit"
@@ -52,13 +52,22 @@ def checkEvents(pygame, objects):
             if event.key == pygame.K_ESCAPE:
                 return "quit"
             if event.key == pygame.K_LEFT:
-                objects[0].turn("left")
+                choices[1]=-1
             if event.key == pygame.K_RIGHT:
-                objects[0].turn("right")
+                choices[1]=1
             if event.key == pygame.K_UP:
-                objects[0].accelerate()
+                choices[0]=1
             if event.key == pygame.K_DOWN:
-                objects[0].decelerate()
+                choices[0]=-1
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                choices[1]=0
+            if event.key == pygame.K_RIGHT:
+                choices[1]= 0
+            if event.key == pygame.K_UP:
+                choices[0]=0
+            if event.key == pygame.K_DOWN:
+                choices[0]=0
             
 
 def init(pygame, window):
@@ -73,10 +82,11 @@ def init(pygame, window):
 
 def run(pygame, screen, background, objects, game_loop, window):
     clock = pygame.time.Clock()
+    choices = [0,0]
     while game_loop.run == True:
-        update(objects, game_loop.FPS)
+        update(objects, game_loop.FPS, choices)
         render(pygame, screen, background, objects, window)
-        action = checkEvents(pygame, objects)
+        action = checkEvents(pygame, objects, choices)
         if action == "quit":
             return 1
         

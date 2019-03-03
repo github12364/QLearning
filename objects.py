@@ -12,27 +12,26 @@ class Car:
         self.x = x
         self.y = y
         self.angle = 0
+        self.wheel_angle = 0
         self.v = 0
-        self.a = 1
-        self.rv = math.pi / 180
-        self.length = 100
-        self.width = 50
+        self.min_v = -20
+        self.max_v = 50
+        self.dv = 20
+        self.d_angle = math.pi/4
+        self.length = 30
+        self.width = 15
         self.color = color
         self.name = "car"
 
-    def turn(self, direction):
-        if direction == "right":
-            self.angle = (self.angle + self.rv) % (2 * math.pi)
-        elif direction == "left":
-            self.angle = (self.angle - self.rv) % (2 * math.pi)
-
-    def accelerate(self):
-        self.v += 1
-            
-    def decelerate(self):
-        self.v -= 1
-        
     
+    def update(self, choices, FPS):
+        self.x += self.v*math.cos(self.angle)/FPS
+        self.y += self.v*math.sin(self.angle)/FPS
+        self.v += self.dv*choices[0]/FPS
+        self.v = min(self.v, self.max_v)
+        self.v = max(self.v, self.min_v)
+        self.wheel_angle = self.d_angle*choices[1]/FPS
+        self.angle += self.wheel_angle * self.v /FPS 
         
     def getVerticies(self):
         frontright = (self.x+math.cos(self.angle)*self.length/2-math.sin(self.angle)*self.width/2, 
