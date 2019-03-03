@@ -1,6 +1,8 @@
-class QLearner():
+class QLearner:
     def __init__(self):
-        self.lambda = 0.1
+        self.learning_rate = 0.1
+        self.discount_factor = 0.1
 
     def qlearn(self, currentQ, r, sprime, aprime,  ):
-        Q(s, a) = currentQ + alpha * (r + self.lambda * maxaQ(sprime, aprime) - currentQ)
+        Qsa = model.predict()
+        Q(s, a) = currentQ + self.learning_rate * (r + self.discount_factor * maxaQ(sprime, aprime) - currentQ)
