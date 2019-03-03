@@ -1,8 +1,8 @@
 import math
 
 class Map:
-    def __init__(self, length, height, name, color):
-        self.length = length
+    def __init__(self, width, height, name, color):
+        self.width = width
         self.height = height
         self.name = name
         self.color = color
