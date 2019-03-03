@@ -8,7 +8,7 @@ class Map:
         self.color = color
         
 class Car:
-    def __init__(self, x, y, a, ra, color):
+    def __init__(self, x, y, a, ra, color, name):
         self.x = x
         self.y = y
         self.angle = 0
@@ -18,6 +18,7 @@ class Car:
         self.length = 20
         self.width = 10
         self.color = color
+        self.name = "car"
 
     def turn(self, direction):
         if direction == "right":
@@ -36,26 +37,27 @@ class Car:
         self.y -= self.v * math.cos(self.angle)
 
 class Obstructions:
-    def __init__(self, x, y, color):
+    def __init__(self, x, y, color, name):
         self.x = x
         self.y = y
         self.color = color
+        self.name = name
 
 class Cone(Obstructions):
     def __init__(self, x, y, color, radius):
-        Obstructions.__init__(self, x, y, color)
+        Obstructions.__init__(self, x, y, color, "cone")
         self.radius = radius
 
 class Wall(Obstructions):
     def __init__(self, x, y, x2, y2, width, color):
-        Obstructions.__init__(self, x, y, color)
+        Obstructions.__init__(self, x, y, color, "wall")
         self.x2 = x2
         self.y2 = y2
         self.width = width
     
 class Pedestrian(Obstructions): 
     def __init__(self, x, y, x2, y2, v, color):
-        Obstructions.__init__(self, x, y, color)
+        Obstructions.__init__(self, x, y, color, "pedestrian")
         self.x2 = x2
         self.y2 = y2
         self.v = v
