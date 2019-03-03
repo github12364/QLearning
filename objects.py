@@ -1,9 +1,10 @@
 import math
 
 class Map:
-    def __init__(self, length, height):
+    def __init__(self, length, height, name):
         self.length = length
         self.height = height
+        self.name = name
         
 class Car:
     def __init__(self, x, y, a, ra):
