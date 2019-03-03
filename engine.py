@@ -10,7 +10,6 @@ import physics
 def addObject(pygame, background, x):
     if x.name == "car":
         verticies = x.getVerticies()
-        pygame.draw.circle(background, background.get_at((0, 0))[:3], (int(x.x+0.5),int(x.y+0.5)),150)
         pygame.draw.circle(background, (255,0,0), tuple(map(lambda x: int(x+0.5), verticies[0])), 3)
         pygame.draw.circle(background, (0,255,0),tuple(map(lambda x: int(x+0.5), verticies[1])), 3)
         pygame.draw.circle(background, (0,0,255), tuple(map(lambda x: int(x+0.5), verticies[2])), 3)
@@ -20,13 +19,14 @@ def addObject(pygame, background, x):
         pygame.draw.circle(background, x.color,(int(x.x+0.5),int(x.y+0.5)), int(x.radius+0.5))
     if x.name == "wall":
         pygame.draw.line(background, x.color, (int(x.x+0.5),int(x.y+0.5)),(int(x.x2+0.5),int(x.y2+0.5)), int(x.width+0.5))
-    return background
+    return True
 
 def render(pygame, screen, background, objects, window):
+    background.fill(window.color)
     for x in objects:
         addObject(pygame, background, x)
     screen.blit(background, (0, 0))
-    pygame.display.update(objects[0].x-100, objects[0].y-100, objects[0].x+100, objects[0].y+100)
+    pygame.display.update()
     
 def update(objects, FPS, choices):
     car = objects[0]
