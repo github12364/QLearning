@@ -196,11 +196,10 @@ def run(pygame, screen, background, objectList, game_loop, window, pixelBackgrou
         status = update(objectList, game_loop.FPS, choices, window)
         action = checkEvents(pygame, objectList, choices)
         pixelArray = getPixelArray(pixelBackground, objectList[0])
-        action = ql.chooseAction(pixelArray)
+        choices = ql.chooseAction(pixelArray)
         if action == "quit":
             game_loop.run = False
             return 1
         if status == False: 
             return 0
         clock.tick(game_loop.FPS)
-        return action

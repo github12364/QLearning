@@ -1,7 +1,8 @@
+import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Flatten
-from collection import deque
-import numpy as np
+from collections import deque
+
 
 import random
 
@@ -13,7 +14,8 @@ class QLearn:
         self.model.add(Dense(16, init='uniform', activation='relu'))
         self.model.add(Dense(16, init='uniform', activation='relu'))
         self.model.add(Dense(9, init='uniform', activation='linear'))
-        self.model.compile(loss='mse', optimizer='adam', metrics={'accuracy'})
+       # self.model.compile(loss='mse', optimizer='adam', metrics={'accuracy'})
+
 
         self.D = deque()
 
@@ -24,7 +26,7 @@ class QLearn:
         self.mb_size = 50
 
     def chooseAction(self, pixelArray):
-        return (np.random.randint(0, 2, size=1)[0], np.random.randint(0,2, size=1)[0])
+        return (np.random.randint(-1, 2, size=1)[0], np.random.randint(-1,2, size=1)[0])
         # if np.random.rand() <= self.epsilon:
         #     action = np.random.randint(0, 9, size=1)[0]
         # else:
