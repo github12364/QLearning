@@ -33,14 +33,15 @@ def update(objects, FPS, choices):
     for x in objects:
         if x.name == "car":
             car.update(choices, FPS)
-        if x.name == "cone":
             continue
+        if x.name == "cone":
+            collision = physics.carCircle(car, x)
         if x.name == "wall":
             collision = physics.carLine(car, (x.x,x.y,x.x2,x.y2))
-            if collision:
-                x.color = (0,0,0)
-            else:
-                x.color = (255, 0, 0)
+        if collision:
+            x.color = (0,0,0)
+        else:
+            x.color = (255, 0, 0)
             
         
 
